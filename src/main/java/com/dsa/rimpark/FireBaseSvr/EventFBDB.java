@@ -2,12 +2,14 @@ package com.dsa.rimpark.FireBaseSvr;
 
 import android.support.annotation.NonNull;
 
+import com.dsa.rimpark.EventCounts;
 import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -65,9 +67,42 @@ public class EventFBDB {
         });
     }
 
-    public void getCount(String status, Integer count)
+    public void getCount(final String status, final EventCounts count)
     {
-        count = 10;
+        Query query=reference.orderByChild("status").startAt(status);
+        switch (status) {
+            case "COMPLETED" :
+                query.endAt("ONGOING");
+                break;
+            case "ONGOING" :
+                query.endAt("UPCOMING");
+                break;
+            case "UPCOMING" :
+
+                break;
+        }
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                switch (status) {
+                    case "COMPLETED" :
+                        count.completedCount=dataSnapshot.getChildrenCount();
+                        break;
+                    case "ONGOING" :
+                        count.ongoingCount=dataSnapshot.getChildrenCount();
+                        break;
+                    case "UPCOMING" :
+                        count.upcomingCount=dataSnapshot.getChildrenCount();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public DatabaseReference getReference() {

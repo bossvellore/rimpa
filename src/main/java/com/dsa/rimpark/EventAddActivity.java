@@ -35,7 +35,7 @@ public class EventAddActivity extends AppCompatActivity {
                 EventModel eventModel=new EventModel();
                 eventModel.setTitle(titleTxt.getText().toString());
                 eventModel.setDescription(descriptionTxt.getText().toString());
-
+                eventModel.setStatus("UPCOMING");
                 EventFBDB eventDB=new EventFBDB();
                 eventDB.save(eventModel);
             }

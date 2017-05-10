@@ -12,11 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
 import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
@@ -25,6 +27,18 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ListView eventListView;
+    TextView completedTV;
+    TextView ongoingTV;
+    TextView upcomingTV;
+    EventFBDB eventDB = new EventFBDB();
+
+    public MainActivity() {
+
+        //completedTV=(TextView) findViewById(R.id.completedTV);
+
+        //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
+        //upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         eventListView=(ListView) findViewById(R.id.eventsListView);
+        completedTV=(TextView) findViewById(R.id.completedTV);
+        ongoingTV=(TextView) findViewById(R.id.ongoingTV);
+        upcomingTV=(TextView) findViewById(R.id.upcomingTV);
     }
 
     @Override
@@ -72,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        EventFBDB eventDB = new EventFBDB();
+
         final Activity context=this;
         eventDB.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -90,8 +107,42 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Integer count = 1;
-        eventDB.getCount("sdf", count);
-        System.out.println("count is :"+count);
+
+        getCount("COMPLETED", completedTV);
+        getCount("ONGOING", ongoingTV);
+        getCount("UPCOMING", upcomingTV);
+    }
+    public void getCount(final String status, final TextView countTV)
+    {
+        Query query=eventDB.getReference().orderByChild("status").equalTo(status);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                switch (status) {
+                    case "COMPLETED" :
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                countTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                            }
+                        });
+                        break;
+                    case "ONGOING" :
+                        ongoingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        break;
+                    case "UPCOMING" :
+                        upcomingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
+
