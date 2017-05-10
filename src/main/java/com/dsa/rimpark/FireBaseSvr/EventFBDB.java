@@ -36,7 +36,6 @@ public class EventFBDB {
 
     public void save(EventModel event)
     {
-        //reference.setValue(event);
         reference.push().setValue(event);
     }
 
