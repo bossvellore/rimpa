@@ -90,5 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        Integer count = 1;
+        eventDB.getCount("sdf", count);
+        System.out.println("count is :"+count);
     }
 }
