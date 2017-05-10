@@ -36,19 +36,22 @@ public class EventFBDB {
 
     public void save(EventModel event)
     {
-        //reference.setValue(event);
         reference.push().setValue(event);
     }
 
+    public void save(EventModel event, String key)
+    {
+        reference.child(key).setValue(event);
+    }
     public void getEvents()
     {
-
         final List<Map<String, EventModel>> events = new ArrayList<Map<String,EventModel>>();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
                     // TODO: handle the post
+
                     HashMap<String,EventModel> event = new HashMap<String, EventModel>();
                     event.put(eventSnapshot.getKey(), eventSnapshot.getValue(EventModel.class));
                     events.add(event);
@@ -60,6 +63,11 @@ public class EventFBDB {
 
             }
         });
+    }
+
+    public void getCount(String status, Integer count)
+    {
+        count = 10;
     }
 
     public DatabaseReference getReference() {
