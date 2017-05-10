@@ -16,7 +16,7 @@ public class EventAddActivity extends AppCompatActivity {
     EditText descriptionTxt;
     EditText dateTxt;
     EditText timeTxt;
-
+    Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +27,12 @@ public class EventAddActivity extends AppCompatActivity {
         dateTxt = (EditText)findViewById(R.id.dateTxt);
         timeTxt = (EditText)findViewById(R.id.timeTxt);
 
+        bundle=getIntent().getExtras();
+        if(bundle.getBoolean("is_edit")) {
+            String key=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getKey();
+            EventModel event=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getValue(EventModel.class);
+
+        }
         final Button eventCreate=(Button)findViewById(R.id.eventCreateBtn);
         eventCreate.setOnClickListener(new View.OnClickListener(){
 

@@ -20,7 +20,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".EventAddActivity" />
-        <activity android:name=".CardActivity"></activity>
+        <activity android:name=".CardActivity" />
+        <activity
+            android:name=".EventAttendeeActivity"
+            android:label="@string/title_activity_event_attendee"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AttendeeAddActivity"></activity>
     </application>
 
 </manifest>

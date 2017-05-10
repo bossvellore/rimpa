@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     TextView ongoingTV;
     TextView upcomingTV;
     EventFBDB eventDB = new EventFBDB();
-
+    public static List<DataSnapshot> dataSnapshotList = new ArrayList<DataSnapshot>();
     public MainActivity() {
 
         //completedTV=(TextView) findViewById(R.id.completedTV);
@@ -59,6 +60,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         eventListView=(ListView) findViewById(R.id.eventsListView);
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
+                Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
+                eventAddIntent.putExtra("data_snapshot", position);
+                eventAddIntent.putExtra("is_edit", true);
+                startActivity(eventAddIntent);
+                */
+                Intent eventAttendeeIntent= new Intent(getApplicationContext(), EventAttendeeActivity.class);
+                eventAttendeeIntent.putExtra("data_snapshot_position", position);
+                eventAttendeeIntent.putExtra("is_manage_attendee", true);
+                startActivity(eventAttendeeIntent);
+            }
+        });
+
+        eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
+            }
+        });
         completedTV=(TextView) findViewById(R.id.completedTV);
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
@@ -94,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         eventDB.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<DataSnapshot> dataSnapshotList = new ArrayList<DataSnapshot>();
+                dataSnapshotList.clear();
                 for (DataSnapshot eventDataSnapShot : dataSnapshot.getChildren()) {
                     dataSnapshotList.add(eventDataSnapShot);
                 }
