@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         eventListView=(ListView) findViewById(R.id.eventsListView);
+
     }
 
     @Override
