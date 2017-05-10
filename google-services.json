@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1034570323116",
+    "firebase_url": "https://rimpark-8bea4.firebaseio.com",
+    "project_id": "rimpark-8bea4",
+    "storage_bucket": "rimpark-8bea4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034570323116:android:767680af20fd2001",
+        "android_client_info": {
+          "package_name": "com.dsa.rimpark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034570323116-3upbnshp6elfa13pmr2iht4jbsdl104g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dsa.rimpark",
+            "certificate_hash": "f666e12d0d3f0e1fbdc1d4695b9661828409be0d"
+          }
+        },
+        {
+          "client_id": "1034570323116-9gduhnsr49d9pki7321garuqsfefubou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBK-avqChnrHKJfTrfHCLlPaiIGnjYHINg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1034570323116-9gduhnsr49d9pki7321garuqsfefubou.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1034570323116-p6cfiji3lp1onaqcavm92iq6avgpn4lr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dsa.rimpark"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
