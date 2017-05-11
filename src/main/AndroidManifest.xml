@@ -19,13 +19,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventAddActivity" />
+        <activity android:name=".EventAddActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dsa.rimpark.MainActivity" />
+        </activity>
+
         <activity android:name=".CardActivity" />
         <activity
             android:name=".EventAttendeeActivity"
             android:label="@string/title_activity_event_attendee"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AttendeeAddActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dsa.rimpark.MainActivity" />
+        </activity>
+        <activity android:name=".AttendeeAddActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dsa.rimpark.EventAttendeeActivity" />
+        </activity>
     </application>
 
 </manifest>

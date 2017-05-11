@@ -28,11 +28,15 @@ public class EventAddActivity extends AppCompatActivity {
         timeTxt = (EditText)findViewById(R.id.timeTxt);
 
         bundle=getIntent().getExtras();
-        if(bundle.getBoolean("is_edit")) {
-            String key=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getKey();
-            EventModel event=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getValue(EventModel.class);
+        if (bundle != null) {
+            Boolean isEdit = bundle.getBoolean("is_edit");
+            if( isEdit ) {
+                String key=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getKey();
+                EventModel event=MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot")).getValue(EventModel.class);
 
+            }
         }
+
         final Button eventCreate=(Button)findViewById(R.id.eventCreateBtn);
         eventCreate.setOnClickListener(new View.OnClickListener(){
 
