@@ -1,25 +1,26 @@
 package com.dsa.rimpark;
 
-/**
- * Created by amalroshand on 09/05/17.
- */
 import android.app.Activity;
-import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.dsa.rimpark.model.Attendee;
 import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
 
-import java.util.Iterator;
 import java.util.List;
-public class EventsListAdaper extends BaseAdapter {
+
+/**
+ * Created by amalroshand on 11/05/17.
+ */
+
+public class AttendeeListAdapter extends BaseAdapter {
 
     List<DataSnapshot> items;
     Activity context;
-    public EventsListAdaper(Activity context, List<DataSnapshot> items) {
+    public AttendeeListAdapter(Activity context, List<DataSnapshot> items) {
         super();
         this.context = context;
         this.items = items;
@@ -44,10 +45,10 @@ public class EventsListAdaper extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView; // re-use an existing view, if one is available
         if (view == null) // otherwise create a new one
-            view = context.getLayoutInflater().inflate(R.layout.adapter_event_item, null);
-        TextView titleText=(TextView)view.findViewById(R.id.titleTV);
-        titleText.setText(items.get(position).getValue(EventModel.class).getTitle());
+            view = context.getLayoutInflater().inflate(R.layout.adapter_attendee_item, null);
+        Attendee attendee = items.get(position).getValue(Attendee.class);
+        TextView titleText=(TextView)view.findViewById(R.id.attendeeNameTV);
+        titleText.setText(attendee.getName());
         return view;
-
     }
 }

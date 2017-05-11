@@ -8,12 +8,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.dsa.rimpark.FireBaseSvr.AttendeeFBDB;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventAttendeeActivity extends AppCompatActivity {
     Bundle bundle;
     DataSnapshot eventDataSnapShot;
     int STATE_EVENT_POSITION;
+    static String eventKey="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +37,7 @@ public class EventAttendeeActivity extends AppCompatActivity {
             STATE_EVENT_POSITION = savedInstanceState.getInt("data_snapshot_position");
         }
         eventDataSnapShot = MainActivity.dataSnapshotList.get(STATE_EVENT_POSITION);
-
+        eventKey=eventDataSnapShot.getKey();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +49,13 @@ public class EventAttendeeActivity extends AppCompatActivity {
                 startActivity(attendeeAddIntent);
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override

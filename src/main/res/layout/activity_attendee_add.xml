@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Attendee mobile number"
-                android:inputType="textPersonName" />
+                android:inputType="phone" />
 
             <TextView
                 android:id="@+id/textView10"

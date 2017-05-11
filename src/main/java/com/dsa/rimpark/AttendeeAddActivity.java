@@ -40,13 +40,20 @@ public class AttendeeAddActivity extends AppCompatActivity {
         addAttendeeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attendee.setName(nameTxt.getText().toString());
-                attendee.setEmail(emailTxt.getText().toString());
-                attendee.setMobile(Long.valueOf(mobileTxt.getText().toString()));
-                attendee.setNotes(notesTxt.getText().toString());
-                attendee.setCompany(companyTxt.getText().toString());
-                AttendeeFBDB attendeeFBDB = new AttendeeFBDB(eventKey);
-                attendeeFBDB.save(attendee);
+                if(!nameTxt.getText().toString().equals("")) {
+                    attendee.setName(nameTxt.getText().toString());
+                    attendee.setEmail(emailTxt.getText().toString());
+                    String mobile = mobileTxt.getText().toString().trim();
+                    if (!mobile.equals("")) {
+                        attendee.setMobile(Long.valueOf(mobileTxt.getText().toString()));
+                    }
+                    attendee.setNotes(notesTxt.getText().toString());
+                    attendee.setCompany(companyTxt.getText().toString());
+                    AttendeeFBDB attendeeFBDB = new AttendeeFBDB(eventKey);
+                    attendeeFBDB.save(attendee);
+                    onBackPressed();
+
+                }
             }
         });
     }
