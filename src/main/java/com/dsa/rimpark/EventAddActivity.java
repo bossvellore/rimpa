@@ -3,21 +3,27 @@ package com.dsa.rimpark;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
 import com.dsa.rimpark.model.EventModel;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
-import java.util.logging.SimpleFormatter;
+
 
 public class EventAddActivity extends AppCompatActivity {
 
@@ -26,6 +32,7 @@ public class EventAddActivity extends AppCompatActivity {
     EditText dateTxt;
     EditText timeTxt;
     Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +43,21 @@ public class EventAddActivity extends AppCompatActivity {
         dateTxt = (EditText)findViewById(R.id.dateTxt);
         timeTxt = (EditText)findViewById(R.id.timeTxt);
 
+        SimpleDateFormat dateF = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat timeF = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String date = dateF.format(Calendar.getInstance().getTime());
+        String time = timeF.format(Calendar.getInstance().getTime());
+
+
+        dateTxt.setText(date);
+        timeTxt.setText(time);
+
         dateTxt.setOnClickListener(new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-              Calendar myCurrentDate = Calendar.getInstance();
+                Calendar myCurrentDate = Calendar.getInstance();
                 int mYear = myCurrentDate.get(Calendar.YEAR);
                 int mMonth = myCurrentDate.get(Calendar.MONTH);
                 int mDay = myCurrentDate.get(Calendar.DAY_OF_MONTH);
@@ -100,6 +117,8 @@ public class EventAddActivity extends AppCompatActivity {
                 EventModel eventModel=new EventModel();
                 eventModel.setTitle(titleTxt.getText().toString());
                 eventModel.setDescription(descriptionTxt.getText().toString());
+                String datetime = dateTxt.getText().toString() +" "+ timeTxt.getText().toString();
+                eventModel.setDateTime(datetime);
                 eventModel.setStatus("UPCOMING");
                 EventFBDB eventDB=new EventFBDB();
                 eventDB.save(eventModel);
@@ -109,5 +128,3 @@ public class EventAddActivity extends AppCompatActivity {
 
 
 }
-
-
