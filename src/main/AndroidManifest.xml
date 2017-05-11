@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventAddActivity" >
+        <activity android:name=".EventAddActivity"
+            android:label="@string/title_activity_event_add">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dsa.rimpark.MainActivity" />
@@ -34,7 +35,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dsa.rimpark.MainActivity" />
         </activity>
-        <activity android:name=".AttendeeAddActivity">
+        <activity android:name=".AttendeeAddActivity"
+            android:label="@string/title_activity_attendee_add">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dsa.rimpark.EventAttendeeActivity" />

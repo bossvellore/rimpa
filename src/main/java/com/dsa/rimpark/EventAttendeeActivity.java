@@ -13,17 +13,23 @@ import com.google.firebase.database.DataSnapshot;
 public class EventAttendeeActivity extends AppCompatActivity {
     Bundle bundle;
     DataSnapshot eventDataSnapShot;
+    int STATE_EVENT_POSITION;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_attendee);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle=getIntent().getExtras();
-        eventDataSnapShot = MainActivity.dataSnapshotList.get(bundle.getInt("data_snapshot_position"));
-
+        if(bundle != null) {
+            STATE_EVENT_POSITION = bundle.getInt("data_snapshot_position");
+        }else if(savedInstanceState != null)
+        {
+            STATE_EVENT_POSITION = savedInstanceState.getInt("data_snapshot_position");
+        }
+        eventDataSnapShot = MainActivity.dataSnapshotList.get(STATE_EVENT_POSITION);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -31,14 +37,16 @@ public class EventAttendeeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
-                Intent eventAddIntent= new Intent(getApplicationContext(), AttendeeAddActivity.class);
-                startActivity(eventAddIntent);
+                Intent attendeeAddIntent= new Intent(getApplicationContext(), AttendeeAddActivity.class);
+                attendeeAddIntent.putExtra("event_key", eventDataSnapShot.getKey());
+                startActivity(attendeeAddIntent);
             }
         });
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("data_snapshot_position", STATE_EVENT_POSITION);
         super.onSaveInstanceState(outState);
     }
 }

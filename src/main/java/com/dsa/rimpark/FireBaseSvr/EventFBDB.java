@@ -27,12 +27,14 @@ import java.util.Set;
 
 public class EventFBDB {
     // Write a message to the database
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+    private FirebaseDatabase database;
     private DatabaseReference reference;
 
     public EventFBDB()
     {
-
+        database = FirebaseDatabase.getInstance();
+        //database.setPersistenceEnabled(true);
         reference = database.getReference("events");
     }
 
@@ -45,6 +47,7 @@ public class EventFBDB {
     {
         reference.child(key).setValue(event);
     }
+
     public void getEvents()
     {
         final List<Map<String, EventModel>> events = new ArrayList<Map<String,EventModel>>();
