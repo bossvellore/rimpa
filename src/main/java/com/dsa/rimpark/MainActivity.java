@@ -3,8 +3,6 @@ package com.dsa.rimpark;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
-import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -31,8 +28,24 @@ public class MainActivity extends AppCompatActivity {
     TextView completedTV;
     TextView ongoingTV;
     TextView upcomingTV;
+    EventsListAdapter eventsListAdaper;
     EventFBDB eventDB = new EventFBDB();
     public static List<DataSnapshot> dataSnapshotList = new ArrayList<DataSnapshot>();
+    ValueEventListener eventsValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            dataSnapshotList.clear();
+            for (DataSnapshot eventDataSnapShot : dataSnapshot.getChildren()) {
+                dataSnapshotList.add(eventDataSnapShot);
+            }
+            eventsListAdaper.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
     public MainActivity() {
 
         //completedTV=(TextView) findViewById(R.id.completedTV);
@@ -47,28 +60,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                  //      .setAction("Action", null).show();
                 Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
                 startActivity(eventAddIntent);
             }
         });
 
         eventListView=(ListView) findViewById(R.id.eventsListView);
+        eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
+        eventListView.setAdapter(eventsListAdaper);
+        eventDB.getReference().addValueEventListener(eventsValueEventListener);
+
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*
-                Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
-                eventAddIntent.putExtra("data_snapshot", position);
-                eventAddIntent.putExtra("is_edit", true);
-                startActivity(eventAddIntent);
-                */
                 Intent eventAttendeeIntent= new Intent(getApplicationContext(),EventAttendeeActivity.class);
                 eventAttendeeIntent.putExtra("data_snapshot_position", position);
                 eventAttendeeIntent.putExtra("is_manage_attendee", true);
@@ -79,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
         eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
+                Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
+                eventAddIntent.putExtra("data_snapshot", position);
+                eventAddIntent.putExtra("is_edit", true);
+                startActivity(eventAddIntent);
+                */
                 return false;
             }
         });
@@ -114,26 +128,17 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         final Activity context=this;
-        eventDB.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dataSnapshotList.clear();
-                for (DataSnapshot eventDataSnapShot : dataSnapshot.getChildren()) {
-                    dataSnapshotList.add(eventDataSnapShot);
-                }
-                EventsListAdaper eventsListAdaper = new EventsListAdaper(context, dataSnapshotList);
-                eventListView.setAdapter(eventsListAdaper);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
 
         getCount("COMPLETED", completedTV);
         getCount("ONGOING", ongoingTV);
         getCount("UPCOMING", upcomingTV);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
     public void getCount(final String status, final TextView countTV)
     {
