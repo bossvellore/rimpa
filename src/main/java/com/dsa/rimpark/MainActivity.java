@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 eventAddIntent.putExtra("is_edit", true);
                 startActivity(eventAddIntent);
                 */
-                Intent eventAttendeeIntent= new Intent(getApplicationContext(), EventAttendeeActivity.class);
+                Intent eventAttendeeIntent= new Intent(getApplicationContext(),EventAttendeeActivity.class);
                 eventAttendeeIntent.putExtra("data_snapshot_position", position);
                 eventAttendeeIntent.putExtra("is_manage_attendee", true);
                 startActivity(eventAttendeeIntent);
