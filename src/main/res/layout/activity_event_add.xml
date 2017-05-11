@@ -28,6 +28,7 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="Title" />
 
         <EditText
@@ -42,7 +43,8 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="Description"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/descriptionText"
@@ -56,7 +58,8 @@
             android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Datetime" />
+            android:text="Date/time"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,6 +73,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="yyyy/mm/dd"
+                android:textAlignment="center"
                 android:inputType="date"
                 android:focusable="false"/>
 
@@ -80,16 +84,17 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="hh:mm"
+                android:textAlignment="center"
                 android:inputType="time"
                 android:focusable="false"/>
         </LinearLayout>
-
         <Button
             android:id="@+id/eventCreateBtn"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:textColor="#FFFFFF"
             android:text="Create" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -9,7 +9,7 @@ import java.util.Date;
 public class EventModel {
     private String title;
     private String description;
-    private Date dateTime;
+    private String dateTime;
     private String status;
 
     public String getTitle() {
@@ -28,11 +28,11 @@ public class EventModel {
         this.description = description;
     }
 
-    public Date getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 
