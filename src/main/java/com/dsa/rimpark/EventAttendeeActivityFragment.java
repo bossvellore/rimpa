@@ -50,12 +50,21 @@ public class EventAttendeeActivityFragment extends Fragment {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+            for (int index=0; index < attendeesDataSnapShotList.size(); index++) {
+                if(attendeesDataSnapShotList.get(index).getKey().equals(dataSnapshot.getKey())){
+                    attendeesDataSnapShotList.set(index, dataSnapshot);
+                }
+            }
+            attendeeListAdapter.notifyDataSetChanged();
         }
-
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+            for (int index=0; index < attendeesDataSnapShotList.size(); index++) {
+                if(attendeesDataSnapShotList.get(index).getKey().equals(dataSnapshot.getKey())){
+                    attendeesDataSnapShotList.remove(index);
+                    attendeeListAdapter.notifyDataSetChanged();
+                }
+            }
         }
 
         @Override

@@ -53,6 +53,10 @@ public class EventFBDB {
         reference.child(childReference).removeValue();
     }
 
+    public void updateStatus(String childReference, String newStatus)
+    {
+        reference.child(childReference).child("status").setValue(newStatus);
+    }
     public void getEvents()
     {
         final List<Map<String, EventModel>> events = new ArrayList<Map<String,EventModel>>();
