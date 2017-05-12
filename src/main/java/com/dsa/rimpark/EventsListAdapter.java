@@ -17,6 +17,8 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 public class EventsListAdapter extends BaseAdapter {
 
     List<DataSnapshot> items;
@@ -62,7 +64,21 @@ public class EventsListAdapter extends BaseAdapter {
         HashMap<String, Attendee> attendees = event.getAttendees();
         if(attendees != null) {
             attendeesTV.setText(String.valueOf(attendees.size()));
-
+            int attended = 0, unAttended = 0;
+            for (Map.Entry<String, Attendee> entry : attendees.entrySet()) {
+                String key = entry.getKey();
+                Attendee attendee = entry.getValue();
+                if(attendee.isAttended())
+                {
+                    attended++;
+                }
+                else
+                {
+                    unAttended++;
+                }
+            }
+            attendedTV.setText(String.valueOf(attended));
+            unAttendedTV.setText(String.valueOf(unAttended));
         }
         return view;
 
