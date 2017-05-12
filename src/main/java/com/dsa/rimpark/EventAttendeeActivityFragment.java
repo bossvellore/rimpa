@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.dsa.rimpark.FireBaseSvr.AttendeeFBDB;
 import com.dsa.rimpark.model.Attendee;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -24,7 +25,7 @@ public class EventAttendeeActivityFragment extends Fragment {
     ListView attendeeListView;
     List<DataSnapshot> attendeesDataSnapShotList;
     AttendeeListAdapter attendeeListAdapter;
-    AttendeeFBDB attendeeFBDB=new AttendeeFBDB(EventAttendeeActivity.eventKey);
+    AttendeeFBDB attendeeFBDB;
     ValueEventListener attendeeValueEventLister = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -40,31 +41,59 @@ public class EventAttendeeActivityFragment extends Fragment {
 
         }
     };
+    ChildEventListener attendeeChildEventListner = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            attendeesDataSnapShotList.add(dataSnapshot);
+            attendeeListAdapter.notifyDataSetChanged();
+        }
 
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
     public EventAttendeeActivityFragment() {
-        attendeesDataSnapShotList=new ArrayList<DataSnapshot>();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_event_attendee, container, false);
+        attendeeFBDB=new AttendeeFBDB(EventAttendeeActivity.eventKey);
+        attendeesDataSnapShotList=new ArrayList<DataSnapshot>();
         attendeeListView =  (ListView) view.findViewById(R.id.attendeeListView);
         attendeeListAdapter=new AttendeeListAdapter(getActivity(), attendeesDataSnapShotList);
         attendeeListView.setAdapter(attendeeListAdapter);
-        //attendeeFBDB.getReference().addValueEventListener(attendeeValueEventLister);
+        attendeeFBDB.getReference().addChildEventListener(attendeeChildEventListner);
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        attendeeFBDB.getReference().addValueEventListener(attendeeValueEventLister);
+        //attendeeFBDB.getReference().addChildEventListener(attendeeChildEventListner);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        attendeeFBDB.getReference().removeEventListener(attendeeValueEventLister);
+        //attendeeFBDB.getReference().removeEventListener(attendeeChildEventListner);
     }
 
     @Override

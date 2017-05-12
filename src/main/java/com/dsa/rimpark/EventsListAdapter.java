@@ -50,4 +50,9 @@ public class EventsListAdapter extends BaseAdapter {
         return view;
 
     }
+
+    public String getKey(int position)
+    {
+        return items.get(position).getKey();
+    }
 }
