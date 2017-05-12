@@ -33,6 +33,10 @@ public class AttendeeFBDB {
     {
         reference.child(childReference).removeValue();
     }
+    public void updateStatus(String childReference, String newStatus)
+    {
+        reference.child(childReference).child("status").setValue(newStatus);
+    }
 
     public DatabaseReference getReference() {
         return reference;
