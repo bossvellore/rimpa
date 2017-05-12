@@ -89,15 +89,79 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+    int upCommingCount;
+    ChildEventListener upCommingStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            upCommingCount++;
+            setStatusText();
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            upCommingCount--;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    int onGoingCount;
+    ChildEventListener onGoingStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            onGoingCount++;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            onGoingCount--;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
     public MainActivity() {
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         //completedTV=(TextView) findViewById(R.id.completedTV);
 
         //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         //upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+        upCommingCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("UPCOMMING").addChildEventListener(upCommingStatusListener);
+        onGoingCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("ONGOING").addChildEventListener(upCommingStatusListener);
         dataSnapshotList.clear();
         eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
         eventDB.getReference().addChildEventListener(eventsChildEventListener);
+
     }
 
     @Override
@@ -151,6 +215,23 @@ public class MainActivity extends AppCompatActivity {
         completedTV=(TextView) findViewById(R.id.completedTV);
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+
+    }
+
+    public void setStatusText()
+    {
+        if(completedTV!=null)
+        {
+            completedTV.setText(String.valueOf(upCommingCount));
+        }
+        if(ongoingTV!=null)
+        {
+            ongoingTV.setText(String.valueOf(onGoingCount));
+        }
+        if(upcomingTV!=null)
+        {
+            upcomingTV.setText(String.valueOf(upCommingCount));
+        }
     }
 
     @Override
@@ -162,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
                 eventDB.delete(eventKey);
                 return true;
             case R.id.setCompleted:
-
+                eventDB.updateStatus(eventKey, "COMPLETED");
                 return  true;
             case  R.id.setOnGoing:
-
+                eventDB.updateStatus(eventKey, "ONGOING");
                 return  true;
 
         }
@@ -209,9 +290,9 @@ public class MainActivity extends AppCompatActivity {
         //final Activity context=this;
         //eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
 
-        getCount("COMPLETED", completedTV);
-        getCount("ONGOING", ongoingTV);
-        getCount("UPCOMING", upcomingTV);
+        //getCount("COMPLETED", completedTV);
+        //getCount("ONGOING", ongoingTV);
+        //getCount("UPCOMING", upcomingTV);
     }
 
     @Override
@@ -219,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
+
     public void getCount(final String status, final TextView countTV)
     {
         Query query=eventDB.getReference().orderByChild("status").equalTo(status);
