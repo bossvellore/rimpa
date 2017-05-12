@@ -1,6 +1,8 @@
 package com.dsa.rimpark.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by amalroshand on 09/05/17.
@@ -11,6 +13,7 @@ public class EventModel {
     private String description;
     private String dateTime;
     private String status;
+    private HashMap<String, Attendee> attendees;
 
     public String getTitle() {
         return title;
@@ -42,5 +45,13 @@ public class EventModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public HashMap<String,Attendee> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(HashMap<String, Attendee> attendees) {
+        this.attendees = attendees;
     }
 }

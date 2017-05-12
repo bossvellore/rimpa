@@ -34,7 +34,7 @@ public class EventFBDB {
     public EventFBDB()
     {
         database = FirebaseDatabase.getInstance();
-        //database.setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         reference = database.getReference("events");
     }
 

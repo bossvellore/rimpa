@@ -14,8 +14,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -46,8 +48,35 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    public MainActivity() {
+    ChildEventListener eventsChildEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot eventDataSnapShot, String s) {
+            dataSnapshotList.add(eventDataSnapShot);
+            eventsListAdaper.notifyDataSetChanged();
+        }
 
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    public MainActivity() {
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         //completedTV=(TextView) findViewById(R.id.completedTV);
 
         //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
@@ -72,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         eventListView=(ListView) findViewById(R.id.eventsListView);
         eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
         eventListView.setAdapter(eventsListAdaper);
-        eventDB.getReference().addValueEventListener(eventsValueEventListener);
+        eventDB.getReference().addChildEventListener(eventsChildEventListener);
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -127,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        final Activity context=this;
-        eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
+        //final Activity context=this;
+        //eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
 
         getCount("COMPLETED", completedTV);
         getCount("ONGOING", ongoingTV);
@@ -138,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        eventDB.getReference().removeEventListener(eventsValueEventListener);
+        //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
     public void getCount(final String status, final TextView countTV)
     {
