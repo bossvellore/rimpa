@@ -49,6 +49,7 @@ public class AttendeeAddActivity extends AppCompatActivity {
                     }
                     attendee.setNotes(notesTxt.getText().toString());
                     attendee.setCompany(companyTxt.getText().toString());
+                    attendee.setStatus("PENDING");
                     AttendeeFBDB attendeeFBDB = new AttendeeFBDB(eventKey);
                     attendeeFBDB.save(attendee);
                     onBackPressed();
