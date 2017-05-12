@@ -11,6 +11,7 @@ public class Attendee {
     private String notes;
     private String company;
     private boolean isAttended;
+    private String status;
 
     public String getName() {
         return name;
@@ -58,5 +59,13 @@ public class Attendee {
 
     public void setAttended(boolean attended) {
         isAttended = attended;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -58,27 +58,34 @@ public class EventsListAdapter extends BaseAdapter {
         TextView unAttendedTV = (TextView)view.findViewById(R.id.unAttendedTV);
         unAttendedTV.setText("");
 
+        TextView pendingTV = (TextView)view.findViewById(R.id.pendingTV);
+        pendingTV.setText("");
         EventModel event = items.get(position).getValue(EventModel.class);
         titleTV.setText(items.get(position).getValue(EventModel.class).getTitle());
 
         HashMap<String, Attendee> attendees = event.getAttendees();
         if(attendees != null) {
             attendeesTV.setText(String.valueOf(attendees.size()));
-            int attended = 0, unAttended = 0;
+            int attended = 0, unAttended = 0, pending = 0;
             for (Map.Entry<String, Attendee> entry : attendees.entrySet()) {
                 String key = entry.getKey();
                 Attendee attendee = entry.getValue();
-                if(attendee.isAttended())
+                switch (attendee.getStatus())
                 {
-                    attended++;
-                }
-                else
-                {
-                    unAttended++;
+                    case "PENDING" :
+                        pending++;
+                        break;
+                    case "ATTENDED" :
+                        attended++;
+                        break;
+                    case "UNATTENDED" :
+                        unAttended++;
+                        break;
                 }
             }
             attendedTV.setText(String.valueOf(attended));
             unAttendedTV.setText(String.valueOf(unAttended));
+            pendingTV.setText(String.valueOf(pending));
         }
         return view;
 

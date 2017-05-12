@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.dsa.rimpark.FireBaseSvr.AttendeeFBDB;
 import com.dsa.rimpark.model.Attendee;
 import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +60,29 @@ public class AttendeeListAdapter extends BaseAdapter {
         companyTv.setText(attendee.getCompany());
         TextView notesTv=(TextView)view.findViewById(R.id.notesTv);
         notesTv.setText(attendee.getNotes());
+        TextView statusTV=(TextView)view.findViewById(R.id.statusTV);
+        if(attendee.getStatus() != null)
+            statusTV.setText(attendee.getStatus().toString());
+        Button setAttendedBtn = (Button)view.findViewById(R.id.setAttendedBtn);
+        setAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(), "ATTENDED"));
+        Button setUnAttendedBtn = (Button)view.findViewById((R.id.setUnAttendedBtn));
+        setUnAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(), "UNATTENDED"));
         return view;
+    }
+}
+
+class StatusChangeButtonClickListener implements View.OnClickListener
+{
+    String attendeeKey, newStatus;
+
+    public StatusChangeButtonClickListener(String attendeeKey, String newStatus)
+    {
+        this.attendeeKey=attendeeKey;
+        this.newStatus=newStatus;
+    }
+    @Override
+    public void onClick(View v) {
+        AttendeeFBDB attendeeFBDB=new AttendeeFBDB(EventAttendeeActivity.eventKey);
+        attendeeFBDB.getReference().child(attendeeKey).child("status").setValue(newStatus);
     }
 }
