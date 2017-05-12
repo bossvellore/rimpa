@@ -49,6 +49,15 @@ public class AttendeeListAdapter extends BaseAdapter {
         Attendee attendee = items.get(position).getValue(Attendee.class);
         TextView titleText=(TextView)view.findViewById(R.id.attendeeNameTV);
         titleText.setText(attendee.getName());
+        TextView mobileTV=(TextView)view.findViewById(R.id.mobileTV);
+        String mobile=String.valueOf(attendee.getMobile());
+        mobileTV.setText(mobile);
+        TextView emailTv=(TextView)view.findViewById(R.id.emailTv);
+        emailTv.setText(attendee.getEmail());
+        TextView companyTv=(TextView)view.findViewById(R.id.companyTv);
+        companyTv.setText(attendee.getCompany());
+        TextView notesTv=(TextView)view.findViewById(R.id.notesTv);
+        notesTv.setText(attendee.getNotes());
         return view;
     }
 }

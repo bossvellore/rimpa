@@ -73,6 +73,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="yyyy/mm/dd"
+                android:textColor="@color/textbody"
                 android:textAlignment="center"
                 android:inputType="date"
                 android:focusable="false"/>
@@ -84,6 +85,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="hh:mm"
+                android:textColor="@color/textbody"
                 android:textAlignment="center"
                 android:inputType="time"
                 android:focusable="false"/>
