@@ -23,10 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.List;
 import java.util.ArrayList;
-import java.util.function.UnaryOperator;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -160,9 +159,15 @@ public class MainActivity extends AppCompatActivity {
         String eventKey = dataSnapshotList.get(info.position).getKey();
         switch (item.getItemId()) {
             case R.id.removeItem:
-
-
+                eventDB.delete(eventKey);
                 return true;
+            case R.id.setCompleted:
+
+                return  true;
+            case  R.id.setOnGoing:
+
+                return  true;
+
         }
         return false;
     }
