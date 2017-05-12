@@ -48,6 +48,11 @@ public class EventFBDB {
         reference.child(key).setValue(event);
     }
 
+    public void delete(String childReference)
+    {
+        reference.child(childReference).removeValue();
+    }
+
     public void getEvents()
     {
         final List<Map<String, EventModel>> events = new ArrayList<Map<String,EventModel>>();

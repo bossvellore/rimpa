@@ -29,6 +29,11 @@ public class AttendeeFBDB {
         reference.child(key).setValue(attendee);
     }
 
+    public void delete(String childReference)
+    {
+        reference.child(childReference).removeValue();
+    }
+
     public DatabaseReference getReference() {
         return reference;
     }

@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.function.UnaryOperator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,11 +58,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+            for (int index=0; index < dataSnapshotList.size(); index++) {
+                if(dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())){
+                    dataSnapshotList.set(index, dataSnapshot);
+                }
+            }
+            eventsListAdaper.notifyDataSetChanged();
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            for (int index=0; index < dataSnapshotList.size(); index++) {
+                if(dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())){
+                    dataSnapshotList.remove(index);
+                    eventsListAdaper.notifyDataSetChanged();
+                }
+            }
 
         }
 
@@ -81,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
         //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         //upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+        dataSnapshotList.clear();
+        eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
+        eventDB.getReference().addChildEventListener(eventsChildEventListener);
     }
 
     @Override
@@ -99,9 +114,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         eventListView=(ListView) findViewById(R.id.eventsListView);
-        eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
         eventListView.setAdapter(eventsListAdaper);
-        eventDB.getReference().addChildEventListener(eventsChildEventListener);
+
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
