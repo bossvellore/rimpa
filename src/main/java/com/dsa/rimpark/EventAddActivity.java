@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 
@@ -32,6 +33,8 @@ public class EventAddActivity extends AppCompatActivity {
     EditText dateTxt;
     EditText timeTxt;
     Bundle bundle;
+    SimpleDateFormat dateF = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    SimpleDateFormat timeF = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,7 @@ public class EventAddActivity extends AppCompatActivity {
         dateTxt = (EditText)findViewById(R.id.dateTxt);
         timeTxt = (EditText)findViewById(R.id.timeTxt);
 
-        SimpleDateFormat dateF = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        SimpleDateFormat timeF = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
         String date = dateF.format(Calendar.getInstance().getTime());
         String time = timeF.format(Calendar.getInstance().getTime());
 
@@ -69,7 +71,8 @@ public class EventAddActivity extends AppCompatActivity {
                         // TODO Auto-generated method stub
                     /*      Your code   to get date and time    */
                         selectedmonth = selectedmonth + 1;
-                        dateTxt.setText("" + selectedday + "/" + selectedmonth + "/" + selectedyear);
+                        Date date = new GregorianCalendar(selectedyear, selectedmonth, selectedday).getTime();
+                        dateTxt.setText(dateF.format(date));
                     }
                 }, mYear, mMonth, mDay);
 
@@ -122,6 +125,7 @@ public class EventAddActivity extends AppCompatActivity {
                 eventModel.setStatus("UPCOMING");
                 EventFBDB eventDB=new EventFBDB();
                 eventDB.save(eventModel);
+                onBackPressed();
             }
         });
     }
