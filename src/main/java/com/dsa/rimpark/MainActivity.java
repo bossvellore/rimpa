@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
 import com.google.firebase.database.ChildEventListener;
@@ -112,22 +115,50 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(eventAttendeeIntent);
             }
         });
+        registerForContextMenu(eventListView);
 
+
+  /*
         eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                /*
+
                 Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
                 eventAddIntent.putExtra("data_snapshot", position);
                 eventAddIntent.putExtra("is_edit", true);
                 startActivity(eventAddIntent);
-                */
-                return false;
+
+
+
+                Toast.makeText(MainActivity.this, "This is my Toast message!"+id+position,
+                        Toast.LENGTH_LONG).show();
+                return true;
             }
-        });
+        });*/
         completedTV=(TextView) findViewById(R.id.completedTV);
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        String eventKey = dataSnapshotList.get(info.position).getKey();
+        switch (item.getItemId()) {
+            case R.id.removeItem:
+
+
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.status_menu, menu);
     }
 
     @Override
