@@ -1,6 +1,5 @@
 package com.dsa.rimpark;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +13,11 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 import java.util.ArrayList;
@@ -89,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    int upCommingCount;
+    int upComingCount;
     ChildEventListener upCommingStatusListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            upCommingCount++;
+            upComingCount++;
             setStatusText();
 
         }
@@ -105,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            upCommingCount--;
+            upComingCount--;
             setStatusText();
         }
 
@@ -148,16 +144,48 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    int completedCount;
+    ChildEventListener completedStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            completedCount++;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            completedCount--;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
     public MainActivity() {
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         //completedTV=(TextView) findViewById(R.id.completedTV);
 
         //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         //upcomingTV=(TextView) findViewById(R.id.upcomingTV);
-        upCommingCount=0;
-        eventDB.getReference().orderByChild("status").equalTo("UPCOMMING").addChildEventListener(upCommingStatusListener);
+        upComingCount =0;
+        eventDB.getReference().orderByChild("status").equalTo("UPCOMING").addChildEventListener(upCommingStatusListener);
         onGoingCount=0;
-        eventDB.getReference().orderByChild("status").equalTo("ONGOING").addChildEventListener(upCommingStatusListener);
+        eventDB.getReference().orderByChild("status").equalTo("ONGOING").addChildEventListener(onGoingStatusListener);
+        completedCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("COMPLETED").addChildEventListener(completedStatusListener);
         dataSnapshotList.clear();
         eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
         eventDB.getReference().addChildEventListener(eventsChildEventListener);
@@ -216,13 +244,14 @@ public class MainActivity extends AppCompatActivity {
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
 
+
     }
 
     public void setStatusText()
     {
         if(completedTV!=null)
         {
-            completedTV.setText(String.valueOf(upCommingCount));
+            completedTV.setText(String.valueOf(completedCount));
         }
         if(ongoingTV!=null)
         {
@@ -230,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(upcomingTV!=null)
         {
-            upcomingTV.setText(String.valueOf(upCommingCount));
+            upcomingTV.setText(String.valueOf(upComingCount));
         }
     }
 
@@ -286,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        setStatusText();
         //final Activity context=this;
         //eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
 
@@ -301,37 +330,6 @@ public class MainActivity extends AppCompatActivity {
         //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
 
-    public void getCount(final String status, final TextView countTV)
-    {
-        Query query=eventDB.getReference().orderByChild("status").equalTo(status);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                switch (status) {
-                    case "COMPLETED" :
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                countTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                            }
-                        });
-                        break;
-                    case "ONGOING" :
-                        ongoingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                        break;
-                    case "UPCOMING" :
-                        upcomingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }
 
