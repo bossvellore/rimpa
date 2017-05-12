@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.dsa.rimpark.model.Attendee;
 import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 public class EventsListAdapter extends BaseAdapter {
@@ -45,8 +47,23 @@ public class EventsListAdapter extends BaseAdapter {
         View view = convertView; // re-use an existing view, if one is available
         if (view == null) // otherwise create a new one
             view = context.getLayoutInflater().inflate(R.layout.adapter_event_item, null);
-        TextView titleText=(TextView)view.findViewById(R.id.titleTV);
-        titleText.setText(items.get(position).getValue(EventModel.class).getTitle());
+        TextView titleTV=(TextView)view.findViewById(R.id.titleTV);
+        titleTV.setText("");
+        TextView attendeesTV = (TextView)view.findViewById(R.id.attendeesTV);
+        attendeesTV.setText("");
+        TextView attendedTV = (TextView)view.findViewById(R.id.attendedTV);
+        attendedTV.setText("");
+        TextView unAttendedTV = (TextView)view.findViewById(R.id.unAttendedTV);
+        unAttendedTV.setText("");
+
+        EventModel event = items.get(position).getValue(EventModel.class);
+        titleTV.setText(items.get(position).getValue(EventModel.class).getTitle());
+
+        HashMap<String, Attendee> attendees = event.getAttendees();
+        if(attendees != null) {
+            attendeesTV.setText(String.valueOf(attendees.size()));
+
+        }
         return view;
 
     }
