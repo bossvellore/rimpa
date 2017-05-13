@@ -6,4 +6,5 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_event_attendee">Event Attendees</string>
     <string name="title_activity_attendee_add">Add Attendee</string>
+    <string name="google_web_client_id">1034570323116-9gduhnsr49d9pki7321garuqsfefubou.apps.googleusercontent.com</string>
 </resources>
