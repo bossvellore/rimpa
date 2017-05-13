@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#ff8080</color>
     <color name="colorAccent">#ff8080</color>
     <color name="textbody">#757575</color>
+    <color name="colorCardGreen">#26A69A</color>
+    <color name="colorCardRed">#FFA726</color>
+    <color name="colorCardBlue">#42A5F5</color>
+    <color name="colorCardText">#FAFAFA</color>
+    <color name="colorCardTextBox">#616161</color>
 </resources>

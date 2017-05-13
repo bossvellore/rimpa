@@ -5,6 +5,8 @@ package com.dsa.rimpark;
  */
 import android.app.Activity;
 import android.database.DataSetObserver;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static android.graphics.Color.rgb;
 
 public class EventsListAdapter extends BaseAdapter {
 
@@ -60,10 +64,35 @@ public class EventsListAdapter extends BaseAdapter {
 
         TextView pendingTV = (TextView)view.findViewById(R.id.pendingTV);
         pendingTV.setText("");
+
+
+
         EventModel event = items.get(position).getValue(EventModel.class);
         titleTV.setText(items.get(position).getValue(EventModel.class).getTitle());
         TextView statusTV = (TextView) view.findViewById(R.id.statusTV);
         statusTV.setText(event.getStatus());
+
+        CardView cardViewList = (CardView) view.findViewById(R.id.eventItemCard);
+        switch (event.getStatus())
+        {
+            case "COMPLETED" :
+                cardViewList.setCardBackgroundColor(Color.parseColor("#A5D6A7"));
+
+                break;
+            case "ONGOING" :
+                cardViewList.setCardBackgroundColor(Color.parseColor("#FFCCBC"));
+
+                break;
+            case "UPCOMING" :
+                cardViewList.setCardBackgroundColor(Color.parseColor("#81D4FA"));
+
+                break;
+        }
+
+        TextView eventDate = (TextView)view.findViewById(R.id.eventDate);
+        eventDate.setText(event.getDateTime());
+
+
 
         HashMap<String, Attendee> attendees = event.getAttendees();
         if(attendees != null) {
