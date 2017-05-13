@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    Menu menu;
     ListView eventListView;
     TextView completedTV;
     TextView ongoingTV;
@@ -220,25 +222,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         registerForContextMenu(eventListView);
-
-
-  /*
-        eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent eventAddIntent= new Intent(getApplicationContext(), EventAddActivity.class);
-                eventAddIntent.putExtra("data_snapshot", position);
-                eventAddIntent.putExtra("is_edit", true);
-                startActivity(eventAddIntent);
-
-
-
-                Toast.makeText(MainActivity.this, "This is my Toast message!"+id+position,
-                        Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });*/
         completedTV=(TextView) findViewById(R.id.completedTV);
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
@@ -292,26 +275,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-      //  getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onResume() {
@@ -331,6 +312,24 @@ public class MainActivity extends AppCompatActivity {
         //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.menu=menu;
+        setLoggedInUser();
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void setLoggedInUser()
+    {
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        String name=user.getDisplayName();
+        if(name.trim().equals(""))
+        {
+            name = user.getEmail();
+        }
+        MenuItem userGreetingMenu = (MenuItem) menu.findItem(R.id.userGreetingMenu);
+        userGreetingMenu.setTitle(name);
+    }
 
 }
 

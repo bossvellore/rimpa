@@ -1,6 +1,8 @@
 package com.dsa.rimpark.FireBaseSvr;
 
 import com.dsa.rimpark.model.Attendee;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -11,12 +13,18 @@ import com.google.firebase.database.FirebaseDatabase;
 public class AttendeeFBDB {
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private FirebaseAuth fbAuth;
+    private FirebaseUser user;
 
     public AttendeeFBDB(String eventKey)
     {
         database = FirebaseDatabase.getInstance();
         //database.setPersistenceEnabled(true);
-        reference = database.getReference("events").child(eventKey).child("attendees");
+        fbAuth = FirebaseAuth.getInstance();
+        user = fbAuth.getCurrentUser();
+        if(user!=null) {
+            reference = database.getReference("users").child(user.getUid()).child("events").child(eventKey).child("attendees");
+        }
     }
 
     public void save(Attendee attendee)

@@ -7,4 +7,13 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/userGreetingMenu"
+        android:checkable="false"
+        android:orderInCategory="101"
+        android:title="Welcome"/>
+    <item
+        android:id="@+id/logoutMenu"
+        android:orderInCategory="102"
+        android:title="Logout" />
 </menu>

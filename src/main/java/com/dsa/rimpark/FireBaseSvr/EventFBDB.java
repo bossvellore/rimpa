@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.dsa.rimpark.EventCounts;
 import com.dsa.rimpark.model.EventModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,12 +32,18 @@ public class EventFBDB {
 
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private FirebaseAuth fbAuth;
+    private FirebaseUser user;
 
     public EventFBDB()
     {
         database = FirebaseDatabase.getInstance();
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        reference = database.getReference("events");
+        fbAuth = FirebaseAuth.getInstance();
+        user = fbAuth.getCurrentUser();
+        if(user!=null) {
+            reference = database.getReference("users").child(user.getUid()).child("events");
+        }
     }
 
     public void save(EventModel event)
