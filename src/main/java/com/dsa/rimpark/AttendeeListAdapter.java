@@ -77,22 +77,17 @@ public class AttendeeListAdapter extends BaseAdapter {
         switch (attendee.getStatus().toString())
         {
             case "ATTENDED" :
-              //  cardViewList.setCardBackgroundColor(rgb(178, 223, 219));
-
-                setAttendedBtn.setBackgroundColor(rgb(38, 166, 154));
-                //setUnAttendedBtn.setBackgroundColor(rgb(255, 255, 255));
-
+                setAttendedBtn.setBackgroundColor(Color.parseColor("#26A69A"));
+                setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                cardViewList.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
                 break;
             case "UNATTENDED" :
-               // cardViewList.setCardBackgroundColor(rgb(255, 224, 178));
-
-                setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFA726"));
                 setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                cardViewList.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
                 break;
             case "PENDING" :
-                cardViewList.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-                setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                cardViewList.setCardBackgroundColor(Color.parseColor("#90CAF9"));
                 break;
         }
 

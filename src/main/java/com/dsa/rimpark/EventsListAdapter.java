@@ -69,8 +69,6 @@ public class EventsListAdapter extends BaseAdapter {
 
         EventModel event = items.get(position).getValue(EventModel.class);
         titleTV.setText(items.get(position).getValue(EventModel.class).getTitle());
-        TextView statusTV = (TextView) view.findViewById(R.id.statusTV);
-        statusTV.setText(event.getStatus());
 
         CardView cardViewList = (CardView) view.findViewById(R.id.eventItemCard);
         switch (event.getStatus())
