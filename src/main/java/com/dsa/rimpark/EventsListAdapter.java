@@ -62,6 +62,8 @@ public class EventsListAdapter extends BaseAdapter {
         pendingTV.setText("");
         EventModel event = items.get(position).getValue(EventModel.class);
         titleTV.setText(items.get(position).getValue(EventModel.class).getTitle());
+        TextView statusTV = (TextView) view.findViewById(R.id.statusTV);
+        statusTV.setText(event.getStatus());
 
         HashMap<String, Attendee> attendees = event.getAttendees();
         if(attendees != null) {

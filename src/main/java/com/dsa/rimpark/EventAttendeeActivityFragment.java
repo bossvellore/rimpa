@@ -26,6 +26,7 @@ public class EventAttendeeActivityFragment extends Fragment {
     List<DataSnapshot> attendeesDataSnapShotList;
     AttendeeListAdapter attendeeListAdapter;
     AttendeeFBDB attendeeFBDB;
+    int allAttendeeCount;
     ValueEventListener attendeeValueEventLister = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -46,6 +47,7 @@ public class EventAttendeeActivityFragment extends Fragment {
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             attendeesDataSnapShotList.add(dataSnapshot);
             attendeeListAdapter.notifyDataSetChanged();
+            allAttendeeCount++;
         }
 
         @Override
@@ -59,6 +61,7 @@ public class EventAttendeeActivityFragment extends Fragment {
         }
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            allAttendeeCount--;
             for (int index=0; index < attendeesDataSnapShotList.size(); index++) {
                 if(attendeesDataSnapShotList.get(index).getKey().equals(dataSnapshot.getKey())){
                     attendeesDataSnapShotList.remove(index);
@@ -78,8 +81,10 @@ public class EventAttendeeActivityFragment extends Fragment {
         }
     };
     public EventAttendeeActivityFragment() {
-
+        allAttendeeCount=0;
     }
+
+    public int getAllAttendeeCount(){return allAttendeeCount;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

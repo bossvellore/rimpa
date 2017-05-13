@@ -1,6 +1,5 @@
 package com.dsa.rimpark;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +13,11 @@ import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 import java.util.ArrayList;
@@ -73,10 +69,98 @@ public class MainActivity extends AppCompatActivity {
             for (int index=0; index < dataSnapshotList.size(); index++) {
                 if(dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())){
                     dataSnapshotList.remove(index);
-                    eventsListAdaper.notifyDataSetChanged();
                 }
             }
+            eventsListAdaper.notifyDataSetChanged();
+        }
 
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    int upComingCount;
+    ChildEventListener upCommingStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            upComingCount++;
+            setStatusText();
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            upComingCount--;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    int onGoingCount;
+    ChildEventListener onGoingStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            onGoingCount++;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            onGoingCount--;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    int completedCount;
+    ChildEventListener completedStatusListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            completedCount++;
+            setStatusText();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            setStatusText();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            completedCount--;
+            setStatusText();
         }
 
         @Override
@@ -95,9 +179,16 @@ public class MainActivity extends AppCompatActivity {
 
         //ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         //upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+        upComingCount =0;
+        eventDB.getReference().orderByChild("status").equalTo("UPCOMING").addChildEventListener(upCommingStatusListener);
+        onGoingCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("ONGOING").addChildEventListener(onGoingStatusListener);
+        completedCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("COMPLETED").addChildEventListener(completedStatusListener);
         dataSnapshotList.clear();
         eventsListAdaper = new EventsListAdapter(this, dataSnapshotList);
         eventDB.getReference().addChildEventListener(eventsChildEventListener);
+
     }
 
     @Override
@@ -151,6 +242,24 @@ public class MainActivity extends AppCompatActivity {
         completedTV=(TextView) findViewById(R.id.completedTV);
         ongoingTV=(TextView) findViewById(R.id.ongoingTV);
         upcomingTV=(TextView) findViewById(R.id.upcomingTV);
+
+
+    }
+
+    public void setStatusText()
+    {
+        if(completedTV!=null)
+        {
+            completedTV.setText(String.valueOf(completedCount));
+        }
+        if(ongoingTV!=null)
+        {
+            ongoingTV.setText(String.valueOf(onGoingCount));
+        }
+        if(upcomingTV!=null)
+        {
+            upcomingTV.setText(String.valueOf(upComingCount));
+        }
     }
 
     @Override
@@ -162,10 +271,10 @@ public class MainActivity extends AppCompatActivity {
                 eventDB.delete(eventKey);
                 return true;
             case R.id.setCompleted:
-
+                eventDB.updateStatus(eventKey, "COMPLETED");
                 return  true;
             case  R.id.setOnGoing:
-
+                eventDB.updateStatus(eventKey, "ONGOING");
                 return  true;
 
         }
@@ -205,13 +314,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        setStatusText();
         //final Activity context=this;
         //eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
 
-        getCount("COMPLETED", completedTV);
-        getCount("ONGOING", ongoingTV);
-        getCount("UPCOMING", upcomingTV);
+        //getCount("COMPLETED", completedTV);
+        //getCount("ONGOING", ongoingTV);
+        //getCount("UPCOMING", upcomingTV);
     }
 
     @Override
@@ -219,37 +328,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
-    public void getCount(final String status, final TextView countTV)
-    {
-        Query query=eventDB.getReference().orderByChild("status").equalTo(status);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                switch (status) {
-                    case "COMPLETED" :
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                countTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                            }
-                        });
-                        break;
-                    case "ONGOING" :
-                        ongoingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                        break;
-                    case "UPCOMING" :
-                        upcomingTV.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                        break;
-                }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }
 
