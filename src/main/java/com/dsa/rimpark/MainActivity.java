@@ -69,10 +69,9 @@ public class MainActivity extends AppCompatActivity {
             for (int index=0; index < dataSnapshotList.size(); index++) {
                 if(dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())){
                     dataSnapshotList.remove(index);
-                    eventsListAdaper.notifyDataSetChanged();
                 }
             }
-
+            eventsListAdaper.notifyDataSetChanged();
         }
 
         @Override
