@@ -88,6 +88,8 @@ public class AttendeeListAdapter extends BaseAdapter {
                 break;
             case "PENDING" :
                 cardViewList.setCardBackgroundColor(Color.parseColor("#90CAF9"));
+                setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 break;
         }
 

@@ -22,19 +22,20 @@ import com.dsa.rimpark.model.Attendee;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.Iterator;
-import java.util.List;
+
+
+
 
 public class EventAttendeeActivity extends AppCompatActivity {
     Bundle bundle;
@@ -247,7 +248,7 @@ public class EventAttendeeActivity extends AppCompatActivity {
             // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
             // To search for all documents available via installed storage providers,
             // it would be "*/*".
-            intent.setType("csv/*");
+            intent.setType("*/*");
 
             startActivityForResult(intent, READ_REQUEST_CODE);
             return true;
@@ -266,14 +267,15 @@ public class EventAttendeeActivity extends AppCompatActivity {
             Uri uri = null;
             if (data != null) {
                 uri = data.getData();
-                readExcelFile(this, uri.toString());
+
+                readExcelFile(this, uri);
                 //Log.i(TAG, "Uri: " + uri.toString());
                 //showImage(uri);
             }
         }
     }
 
-    private void readExcelFile(Context context, String filename) {
+    private void readExcelFile(Context context, Uri uri) {
 
         if (!isExternalStorageAvailable() || isExternalStorageReadOnly())
         {
@@ -283,17 +285,17 @@ public class EventAttendeeActivity extends AppCompatActivity {
 
         try{
             // Creating Input Stream
-            File file = new File(context.getExternalFilesDir(null), filename);
-            FileInputStream myInput = new FileInputStream(file);
+            //File file = new File(context.getExternalFilesDir(null), filename);
+            //File file;
+           // file =
+            //file = getContentResolver().openFileDescriptor(uri, "read");
 
-            // Create a POIFSFileSystem object
-            POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
-
-            // Create a workbook using the File System
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
-
+            InputStream myInput = getContentResolver().openInputStream(uri);
+            //NPOIFSFileSystem fs = new NPOIFSFileSystem(myInput);
+            //XSSFWorkbook attendeeWorkbook = new XSSFWorkbook(myInput);
+            Workbook attendeeWorkbook = WorkbookFactory.create(myInput);
             // Get the first sheet from workbook
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            Sheet mySheet = attendeeWorkbook.getSheetAt(0);
 
             /** We now need something to iterate through the cells.**/
             Iterator rowIter = mySheet.rowIterator();
@@ -301,13 +303,13 @@ public class EventAttendeeActivity extends AppCompatActivity {
             int rowCount=1;
             Attendee attendee;
             while(rowIter.hasNext()){
-                HSSFRow myRow = (HSSFRow) rowIter.next();
+                Row myRow = (Row) rowIter.next();
                 Iterator cellIter = myRow.cellIterator();
                 int coloumnCount=1;
                 if(rowCount > 1) {
                     attendee = new Attendee();
                     while (cellIter.hasNext()) {
-                        HSSFCell currentCell = (HSSFCell) cellIter.next();
+                        Cell currentCell = (Cell) cellIter.next();
                         //Log.d(TAG, "Cell Value: " +  myCell.toString());
                         //Toast.makeText(context, "cell Value: " + myCell.toString(), Toast.LENGTH_SHORT).show();
                         switch(coloumnCount)
@@ -319,9 +321,9 @@ public class EventAttendeeActivity extends AppCompatActivity {
                                 attendee.setEmail(currentCell.toString());
                                 break;
                             case 4://mobile
-                                String mobile=currentCell.toString();
+                                double mobile=currentCell.getNumericCellValue();
                                 try {
-                                    attendee.setMobile(Long.valueOf(mobile));
+                                    attendee.setMobile((long)mobile);
                                 }
                                 catch (Exception ex){}
                                 break;
@@ -334,6 +336,7 @@ public class EventAttendeeActivity extends AppCompatActivity {
                         }
                         coloumnCount++;
                     }
+                    attendee.setStatus("PENDING");
                     attendeeFBDB.save(attendee);
                 }
                 rowCount++;

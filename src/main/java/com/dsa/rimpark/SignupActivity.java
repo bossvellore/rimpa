@@ -135,6 +135,7 @@ public class SignupActivity extends AppCompatActivity implements
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                Log.d(TAG, result.getStatus().toString());
                 signupWithGoogleBtn.setVisibility(View.VISIBLE);
                 mProgress.setVisibility(View.INVISIBLE);
                 Toast.makeText(SignupActivity.this, " Google Signup failed.",

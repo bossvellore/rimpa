@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:text="Att"
+                android:text="Attended"
                 android:background="#FFFFFF"
                 />
 
@@ -36,7 +36,7 @@
                 android:layout_margin="1dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
-                android:text="Un Att" />
+                android:text="Un Attended" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -121,7 +121,6 @@
                     android:textColor="@color/colorCardTextBox"/>
 
                 <TextView
-
                     android:id="@+id/textView6"
                     android:layout_width="132dp"
                     android:layout_column="0"
