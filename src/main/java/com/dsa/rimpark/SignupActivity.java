@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -36,6 +37,7 @@ public class SignupActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     Button signupWithGoogleBtn;
+    ProgressBar mProgress;
     int RC_SIGN_IN=8912;
     String TAG="SignupActivity";
     GoogleApiClient googleApiClient;
@@ -50,15 +52,24 @@ public class SignupActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_signup);
 
+
         signupWithGoogleBtn = (Button)findViewById(R.id.signupWithGoogleBtn);
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
+        mProgress.setVisibility(View.INVISIBLE);
         signupWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                signupWithGoogleBtn.setVisibility(View.INVISIBLE);
+                mProgress.setVisibility(View.VISIBLE);
                 googleSignup();
             }
         });
+
+
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_web_client_id))
@@ -124,6 +135,10 @@ public class SignupActivity extends AppCompatActivity implements
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                signupWithGoogleBtn.setVisibility(View.VISIBLE);
+                mProgress.setVisibility(View.INVISIBLE);
+                Toast.makeText(SignupActivity.this, " Google Signup failed.",
+                        Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
@@ -146,6 +161,8 @@ public class SignupActivity extends AppCompatActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            signupWithGoogleBtn.setVisibility(View.VISIBLE);
+                            mProgress.setVisibility(View.INVISIBLE);
                             Toast.makeText(SignupActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
