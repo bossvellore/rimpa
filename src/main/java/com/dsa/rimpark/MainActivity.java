@@ -276,7 +276,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -287,12 +286,11 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logoutMenu) {
+
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -300,19 +298,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setStatusText();
-
-        //final Activity context=this;
-        //eventDB.getReference().addListenerForSingleValueEvent(eventsValueEventListener);
-
-        //getCount("COMPLETED", completedTV);
-        //getCount("ONGOING", ongoingTV);
-        //getCount("UPCOMING", upcomingTV);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        //eventDB.getReference().removeEventListener(eventsValueEventListener);
     }
 
     @Override
