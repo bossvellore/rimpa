@@ -8,8 +8,5 @@
         android:checkable="false"
         android:orderInCategory="101"
         android:title="Welcome" />
-    <!--<item
-        android:id="@+id/logoutMenu"
-        android:orderInCategory="102"
-        android:title="Logout" />-->
+
 </menu>
