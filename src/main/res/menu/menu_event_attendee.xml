@@ -7,4 +7,14 @@
         android:orderInCategory="100"
         android:title="Import from excel"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_import_excel_help"
+        android:orderInCategory="101"
+        android:title="Excel file format Sample"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_user"
+        android:orderInCategory="102"
+        android:title="Add super user"
+        app:showAsAction="never" />
 </menu>

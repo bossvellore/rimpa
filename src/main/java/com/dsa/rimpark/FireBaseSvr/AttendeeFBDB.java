@@ -20,11 +20,8 @@ public class AttendeeFBDB {
     {
         database = FirebaseDatabase.getInstance();
         //database.setPersistenceEnabled(true);
-        fbAuth = FirebaseAuth.getInstance();
-        user = fbAuth.getCurrentUser();
-        if(user!=null) {
-            reference = database.getReference("users").child(user.getUid()).child("events").child(eventKey).child("attendees");
-        }
+        reference = database.getReference("events").child(eventKey).child("attendees");
+
     }
 
     public void save(Attendee attendee)

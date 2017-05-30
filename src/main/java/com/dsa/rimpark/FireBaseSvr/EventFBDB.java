@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.dsa.rimpark.EventCounts;
 import com.dsa.rimpark.model.EventModel;
+import com.dsa.rimpark.model.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -42,15 +45,33 @@ public class EventFBDB {
         fbAuth = FirebaseAuth.getInstance();
         user = fbAuth.getCurrentUser();
         if(user!=null) {
-            reference = database.getReference("users").child(user.getUid()).child("events");
+            reference = database.getReference("events");
         }
     }
 
     public void save(EventModel event)
     {
-        reference.push().setValue(event);
+        final DatabaseReference newEventReference=reference.push();
+        newEventReference.setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                newEventReference.child("users").child(user.getUid()).setValue("True");
+            }
+        });
+        UserFBDB userFBDB=new UserFBDB();
+        userFBDB.addEvent(user.getUid(), newEventReference.getKey());
+
     }
 
+    public void addUser(String uid, String eventKey)
+    {
+        reference.child(eventKey).child("users").child(uid).setValue("true");
+    }
+
+    public void removeUser(String uid, String eventKey)
+    {
+        reference.child(eventKey).child("users").child(uid).removeValue();
+    }
     public void save(EventModel event, String key)
     {
         reference.child(key).setValue(event);

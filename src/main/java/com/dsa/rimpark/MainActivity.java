@@ -15,14 +15,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dsa.rimpark.FireBaseSvr.EventFBDB;
+import com.dsa.rimpark.model.EventModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,15 +56,35 @@ public class MainActivity extends AppCompatActivity {
     ChildEventListener eventsChildEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot eventDataSnapShot, String s) {
-            dataSnapshotList.add(eventDataSnapShot);
-            eventsListAdaper.notifyDataSetChanged();
+            boolean exists = false;
+            for (int index=0; index < dataSnapshotList.size(); index++) {
+                if(dataSnapshotList.get(index).getKey().equals(eventDataSnapShot.getKey())){
+                    exists = true;
+                }
+            }
+            if(!exists) {
+                EventModel eventModel=eventDataSnapShot.getValue(EventModel.class);
+                if(checkEventForCurrentUser(eventModel.getUsers()))
+                        dataSnapshotList.add(eventDataSnapShot);
+
+                eventsListAdaper.notifyDataSetChanged();
+            }
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            for (int index=0; index < dataSnapshotList.size(); index++) {
-                if(dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())){
-                    dataSnapshotList.set(index, dataSnapshot);
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers())) {
+                boolean foundAndReplaced = false;
+                for (int index = 0; index < dataSnapshotList.size(); index++) {
+                    if (dataSnapshotList.get(index).getKey().equals(dataSnapshot.getKey())) {
+                        dataSnapshotList.set(index, dataSnapshot);
+                        foundAndReplaced=true;
+                    }
+                }
+                if (!foundAndReplaced) {
+                    dataSnapshotList.add(dataSnapshot);
+                    resetCounts();
                 }
             }
             eventsListAdaper.notifyDataSetChanged();
@@ -86,11 +110,26 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+    private boolean checkEventForCurrentUser(HashMap<String,String> users)
+    {
+        if(users!=null)
+        {
+            for (Map.Entry<String,String> user : users.entrySet())
+            {
+                if(user.getKey().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid().toString()))
+                    return true;
+
+            }
+        }
+        return false;
+    }
     int upComingCount;
     ChildEventListener upCommingStatusListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            upComingCount++;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                upComingCount++;
             setStatusText();
 
         }
@@ -102,7 +141,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            upComingCount--;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                upComingCount--;
             setStatusText();
         }
 
@@ -120,7 +161,9 @@ public class MainActivity extends AppCompatActivity {
     ChildEventListener onGoingStatusListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            onGoingCount++;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                onGoingCount++;
             setStatusText();
         }
 
@@ -131,7 +174,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            onGoingCount--;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                onGoingCount--;
             setStatusText();
         }
 
@@ -150,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
     ChildEventListener completedStatusListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            completedCount++;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                completedCount++;
             setStatusText();
         }
 
@@ -161,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            completedCount--;
+            EventModel eventModel=dataSnapshot.getValue(EventModel.class);
+            if(checkEventForCurrentUser(eventModel.getUsers()))
+                completedCount--;
             setStatusText();
         }
 
@@ -192,7 +241,20 @@ public class MainActivity extends AppCompatActivity {
         eventDB.getReference().addChildEventListener(eventsChildEventListener);
 
     }
+    private void resetCounts()
+    {
+        eventDB.getReference().orderByChild("status").equalTo("UPCOMING").removeEventListener(upCommingStatusListener);
+        upComingCount =0;
+        eventDB.getReference().orderByChild("status").equalTo("UPCOMING").addChildEventListener(upCommingStatusListener);
 
+        eventDB.getReference().orderByChild("status").equalTo("ONGOING").removeEventListener(onGoingStatusListener);
+        onGoingCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("ONGOING").addChildEventListener(onGoingStatusListener);
+
+        eventDB.getReference().orderByChild("status").equalTo("COMPLETED").removeEventListener(completedStatusListener);
+        completedCount=0;
+        eventDB.getReference().orderByChild("status").equalTo("COMPLETED").addChildEventListener(completedStatusListener);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent eventAttendeeIntent= new Intent(getApplicationContext(),EventAttendeeActivity.class);
                 eventAttendeeIntent.putExtra("data_snapshot_position", position);
                 eventAttendeeIntent.putExtra("is_manage_attendee", true);
+                eventAttendeeIntent.putExtra("eventUsers", dataSnapshotList.get(position).getValue(EventModel.class).getUsers());
                 startActivity(eventAttendeeIntent);
             }
         });

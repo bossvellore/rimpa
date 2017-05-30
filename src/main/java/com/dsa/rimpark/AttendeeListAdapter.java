@@ -3,6 +3,7 @@ package com.dsa.rimpark;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.dsa.rimpark.FireBaseSvr.AttendeeFBDB;
 import com.dsa.rimpark.model.Attendee;
 import com.dsa.rimpark.model.EventModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.List;
@@ -33,7 +36,7 @@ public class AttendeeListAdapter extends BaseAdapter {
         this.context = context;
         this.items = items;
     }
-
+    public void setItems(List<DataSnapshot> items){this.items=items;}
     @Override
     public int getCount() {
         return items.size();
@@ -66,9 +69,6 @@ public class AttendeeListAdapter extends BaseAdapter {
         companyTv.setText(attendee.getCompany());
         TextView notesTv=(TextView)view.findViewById(R.id.notesTv);
         notesTv.setText(attendee.getNotes());
-        TextView statusTV=(TextView)view.findViewById(R.id.statusTV);
-        if(attendee.getStatus() != null)
-            statusTV.setText(attendee.getStatus().toString());
         CardView cardViewList = (CardView) view.findViewById(R.id.attendeItemCard);
 
         Button setUnAttendedBtn = (Button)view.findViewById((R.id.setUnAttendedBtn));
@@ -92,27 +92,60 @@ public class AttendeeListAdapter extends BaseAdapter {
                 setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 break;
         }
-
-                    ;
-
-        setAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(), "ATTENDED"));
-        setUnAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(), "UNATTENDED"));
+        setAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(),
+                "ATTENDED", setAttendedBtn, setUnAttendedBtn, attendee.getStatus()));
+        setUnAttendedBtn.setOnClickListener(new StatusChangeButtonClickListener(items.get(position).getKey(),
+                "UNATTENDED", setAttendedBtn, setUnAttendedBtn, attendee.getStatus()));
         return view;
     }
 }
 
 class StatusChangeButtonClickListener implements View.OnClickListener
 {
-    String attendeeKey, newStatus;
+    String attendeeKey, newStatus, previousStatus;
+    Button setAttendedBtn,setUnAttendedBtn;
 
-    public StatusChangeButtonClickListener(String attendeeKey, String newStatus)
+    public StatusChangeButtonClickListener(String attendeeKey, String newStatus, Button setAttendedBtn, Button setUnAttendedBtn, String previousStatus)
     {
         this.attendeeKey=attendeeKey;
         this.newStatus=newStatus;
+        this.setAttendedBtn = setAttendedBtn;
+        this.setUnAttendedBtn = setUnAttendedBtn;
+        this.previousStatus = previousStatus;
     }
     @Override
     public void onClick(View v) {
         AttendeeFBDB attendeeFBDB=new AttendeeFBDB(EventAttendeeActivity.eventKey);
-        attendeeFBDB.getReference().child(attendeeKey).child("status").setValue(newStatus);
+        final String finalStatus;
+        if(newStatus.equals(previousStatus))
+        {
+            finalStatus = "PENDING";
+        }
+        else{
+            finalStatus = newStatus;
+        }
+
+        attendeeFBDB.getReference().child(attendeeKey).child("status").setValue(finalStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                switch (finalStatus)
+                {
+                    case "ATTENDED" :
+                        setAttendedBtn.setBackgroundColor(Color.parseColor("#26A69A"));
+                        setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        break;
+                    case "UNATTENDED" :
+                        setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFA726"));
+                        setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        break;
+                    case "PENDING":
+                        setUnAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        setAttendedBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        break;
+                }
+                previousStatus = finalStatus;
+            }
+        });
+
     }
 }

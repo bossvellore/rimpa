@@ -62,9 +62,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Attended"
+                        android:text="Attend"
                         android:textAlignment="center"
-                        android:textColor="@color/colorCardTextBox"/>
+                        android:textColor="@color/colorCardTextBox" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -72,9 +72,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Un Attended"
+                        android:text="Absence"
                         android:textAlignment="center"
-                        android:textColor="@color/colorCardTextBox"/>
+                        android:textColor="@color/colorCardTextBox" />
 
                     <TextView
                         android:id="@+id/textView4"

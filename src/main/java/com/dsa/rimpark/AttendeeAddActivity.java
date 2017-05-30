@@ -53,7 +53,6 @@ public class AttendeeAddActivity extends AppCompatActivity {
                     AttendeeFBDB attendeeFBDB = new AttendeeFBDB(eventKey);
                     attendeeFBDB.save(attendee);
                     onBackPressed();
-
                 }
             }
         });

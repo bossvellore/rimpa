@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
         <activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +19,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EventAddActivity"
             android:label="@string/title_activity_event_add">
@@ -32,7 +31,8 @@
         <activity
             android:name=".EventAttendeeActivity"
             android:label="@string/title_activity_event_attendee"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dsa.rimpark.MainActivity" />
@@ -44,8 +44,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dsa.rimpark.EventAttendeeActivity" />
         </activity>
-        <activity android:name=".ImportExcel"></activity>
-
+        <activity android:name=".ImportExcel">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dsa.rimpark.EventAttendeeActivity" />
+        </activity>
+        <activity android:name=".AddUserActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dsa.rimpark.EventAttendeeActivity" />
+        </activity>
     </application>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

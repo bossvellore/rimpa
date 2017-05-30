@@ -14,6 +14,7 @@ public class EventModel {
     private String dateTime;
     private String status;
     private HashMap<String, Attendee> attendees;
+    private HashMap<String, String> users;
 
     public String getTitle() {
         return title;
@@ -53,5 +54,13 @@ public class EventModel {
 
     public void setAttendees(HashMap<String, Attendee> attendees) {
         this.attendees = attendees;
+    }
+
+    public HashMap<String, String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(HashMap<String, String> users) {
+        this.users = users;
     }
 }

@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Rimpark</string>
+    <string name="app_name">RIMPARK</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_event_add">Add Event</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_event_attendee">Event Attendees</string>
     <string name="title_activity_attendee_add">Add Attendee</string>
-    <string name="google_web_client_id">1034570323116-9gduhnsr49d9pki7321garuqsfefubou.apps.googleusercontent.com</string>
+    <string name="google_web_client_id">581813753646-st6cnp1tq8erla4slkftkcfk8p77llda.apps.googleusercontent.com</string>
 </resources>

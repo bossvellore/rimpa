@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.dsa.rimpark.FireBaseSvr.UserFBDB;
+import com.dsa.rimpark.model.UserModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -22,6 +24,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -158,10 +161,18 @@ public class SignupActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             //Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = fbAuth.getCurrentUser();
+                            UserModel userModel=new UserModel();
+                            userModel.setEmail(user.getEmail());
+                            userModel.setDisplayName(user.getDisplayName());
+                            userModel.setPhotoUrl(user.getPhotoUrl().toString());
+                            userModel.setUid(user.getUid());
+                            UserFBDB userFBDB = new UserFBDB();
+                            userFBDB.save(userModel);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Exception ex=task.getException();
                             signupWithGoogleBtn.setVisibility(View.VISIBLE);
                             mProgress.setVisibility(View.INVISIBLE);
                             Toast.makeText(SignupActivity.this, "Authentication failed.",
@@ -171,7 +182,12 @@ public class SignupActivity extends AppCompatActivity implements
 
                         // ...
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("singn", e.getMessage());
+            }
+        });
     }
 
     @Override

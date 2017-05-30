@@ -160,9 +160,11 @@ public class EventAttendeeActivity extends AppCompatActivity {
         }else if(savedInstanceState != null)
         {
             STATE_EVENT_POSITION = savedInstanceState.getInt("data_snapshot_position");
+            bundle = savedInstanceState.getBundle("onSaveBundle");
         }
         eventDataSnapShot = MainActivity.dataSnapshotList.get(STATE_EVENT_POSITION);
         eventKey=eventDataSnapShot.getKey();
+        bundle.putString("eventKey", eventKey);
         attendedCount=0;
         unAttendedCount=0;
         pendingCount=0;
@@ -216,6 +218,7 @@ public class EventAttendeeActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("data_snapshot_position", STATE_EVENT_POSITION);
+        outState.putBundle("onSaveBundle", bundle);
         super.onSaveInstanceState(outState);
     }
 
@@ -252,6 +255,15 @@ public class EventAttendeeActivity extends AppCompatActivity {
 
             startActivityForResult(intent, READ_REQUEST_CODE);
             return true;
+        }
+        if(id == R.id.action_add_user){
+            Intent addUserIntent = new Intent(getApplicationContext(), AddUserActivity.class);
+            addUserIntent.putExtra("bundle", bundle);
+            startActivity(addUserIntent);
+        }
+        if(id == R.id.action_import_excel_help){
+            Intent excelImportInfoIntent = new Intent(getApplicationContext(), ImportExcel.class);
+            startActivity(excelImportInfoIntent);
         }
         return super.onOptionsItemSelected(item);
     }
